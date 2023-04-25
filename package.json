@@ -1,0 +1,30 @@
+{ "name": "github-cli-bash-pmb",
+  "version": "0.0.1",
+  "description": "A dubious improvised crutch to make the GitHub API a bit easier to use on a system that has bash, curl, and not much else.",
+  "keywords": [
+    "api",
+    "bash",
+    "github"
+  ],
+
+  "author": "M.K. (https://github.com/mk-pmb)",
+  "homepage": "https://github.com/mk-pmb/github-cli-bash-pmb/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/github-cli-bash-pmb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/github-cli-bash-pmb/issues"
+  },
+  "contributors": [],
+
+  "private": true, "license": "ISC",
+
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+
+
+  "engines": { "bash": "4" }
+}
