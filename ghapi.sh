@@ -15,14 +15,26 @@ function ghapi_cli_init () {
 
   local -A CFG=(
     [token]="$GITHUB_TOKEN"
+    [api_host]='https://api.github.com'
     )
+
   local CLI_ARGS=( "$@" )
   cli_prep_parse_early_options || return $?
 
+  local TASK=
   array_shift CLI_ARGS TASK
-  [ -n "$TASK" ] || return 3$(echo "E: No task name given." >&2)
+  case "$TASK" in
+    '' ) echo "E: No task name given." >&2; return 3;;
+    'https://'* | /* )
+      echo E: >&2 "The task name you provided ('${TASK/%[a-z]'/'*/…}')" \
+        'looks like you may have meant:' \
+        "ghapi curl '${TASK#${CFG[api_host]}}'" \
+        "--header 'X-Potential-Curl-Options: after URL' --request PATCH"
+      return 3;;
+  esac
   source_these_libs "$TASK/?" || return $?
-  ghapi_cli_"$TASK" "$@" || return $?$(echo "E: Task $TASK failed, rv=$?" >&2)
+  ghapi_cli_"$TASK" "${CLI_ARGS[@]}" || return $?$(
+    echo "E: Task $TASK failed, rv=$?" >&2)
 }
 
 

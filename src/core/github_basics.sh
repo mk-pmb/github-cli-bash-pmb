@@ -4,7 +4,14 @@
 
 function ghapi_cli_curl () {
   local URL="$1"; shift
-  [ "${URL:0:1}" == / ] && URL="https://api.github.com$URL"
+  case "$URL" in
+    /* ) URL="${CFG[api_host]}$URL";;
+    "${CFG[api_host]}"/* ) ;;
+    * )
+      echo E: 'Expected arg 1 (URL) to start with /' \
+        "or '${CFG[api_host]}' but got: '$URL'" >&2
+      return 4;;
+  esac
   local CURL_ARGS=(
     --location
     --show-error

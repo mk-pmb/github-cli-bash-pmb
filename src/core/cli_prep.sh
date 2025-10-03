@@ -4,12 +4,17 @@
 
 function cli_prep_parse_early_options () {
   local KEY= VAL=
-  while true; do
+  while [ "${#CLI_ARGS[@]}" -ge 1 ]; do
     VAL="${CLI_ARGS[0]}"
-    [ "${VAL:0:2}" == -- ] || break
-    VAL="${VAL#--}"
-    array_shift CLI_ARGS .
-    [ -n "$VAL" ] || break
+    case "$VAL" in
+      -H | --header | -X | --request )
+        echo E: "The $VAL option you provided looks like you may have meant:" \
+          "ghapi curl /some/api/endpoint $VAL '${CLI_ARGS[1]}'" >&2
+        return 3;;
+      -- ) break;;
+      --* ) VAL="${VAL#--}"; array_shift CLI_ARGS . ;;
+      * ) break;;
+    esac
     case "$VAL" in
       *=* ) KEY="${VAL%%=*}"; VAL="${VAL#*=}";;
       * ) KEY="$VAL"; array_shift CLI_ARGS VAL;;
